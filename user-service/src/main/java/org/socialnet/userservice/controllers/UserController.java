@@ -22,7 +22,7 @@ public class UserController {
 
     private final UserServiceImpl userServiceImpl;
 
-    @DeleteMapping("delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestParam Long id){
 
         Optional<User> userToDelete = userServiceImpl.getUserById(id);
@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userToDelete.get());
     }
 
-    @PatchMapping("update")
+    @PatchMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user,
                                            @RequestParam Long id) {
         Optional<User> userToUpdate = userServiceImpl.getUserById(id);
@@ -79,5 +79,11 @@ public class UserController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        Optional<User> user = userServiceImpl.getUserById(id);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
     }
 }

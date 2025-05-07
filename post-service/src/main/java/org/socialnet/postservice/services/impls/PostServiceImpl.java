@@ -3,6 +3,7 @@ package org.socialnet.postservice.services.impls;
 import lombok.RequiredArgsConstructor;
 import org.socialnet.postservice.entities.DTOs.PostDTO;
 import org.socialnet.postservice.entities.Post;
+import org.socialnet.postservice.feign.UserServiceClient;
 import org.socialnet.postservice.repositories.PostRepository;
 import org.socialnet.postservice.services.PostService;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
 
-    private final RestTemplate restTemplate;
+    private final UserServiceClient userServiceClient;
 
-    @Value("${user.service.url}")
-    private String userServiceUrl;
 
 
     @Override
@@ -50,6 +49,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPostsByUserId(Long userId) {
+        Boolean isUserExist = isUserExist(userId);
         if (isUserExist(userId)) {
             return postRepository.findByUserid(userId);
         }
@@ -57,10 +57,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public boolean isUserExist(Long userId) {
-        String url = userServiceUrl + "/users/exists/" + userId;
-        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
-
-        return Boolean.TRUE.equals(response.getBody());
+        return Boolean.TRUE.equals(userServiceClient.isUserExist(userId));
     }
 
     @Override

@@ -11,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter
 @Setter
+@Getter
 @ToString
 @RequiredArgsConstructor
 public class User {
@@ -55,5 +55,7 @@ public class User {
 
     @ElementCollection
     private List<Long> likesIds;
+
+
 
 }
